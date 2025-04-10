@@ -1,2 +1,2 @@
-# Control-2
+# Sitemas de Control II
 Sist de Control 2 - Pucheta

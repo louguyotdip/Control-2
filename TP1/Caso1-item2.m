@@ -27,6 +27,59 @@ t = t - t(1);  % Ahora t(1) = 0
 
 % Selección de puntos para el método 
 t_inic = 0.002;  % Tiempo inicial para primer punto 
+
+%% Calcular derivada hacia atrás de vc
+dt = t(2) - t(1);  % paso de tiempo
+
+dvc_dt = [NaN; diff(vc) / dt];  % Vector columna, igual a vc
+
+% Calcular C en cada instante
+C_estimada = i ./ dvc_dt;
+C_estimada;
+
+%% Función de transferencia teórica con los valores estimados de R, L y C
+C=2.177e-6;
+L=29.4e-3;
+R=282.3;
+
+num_teo = 1; %se desprecia el cero
+den_teo = [L*C R*C 1];
+sys_teo = tf(num_teo, den_teo);
+
+[y_teo, t_teo] = step(StepInput * sys_teo, t(end));%para poder graficarla
+
+% Graficar todas las curvas juntas
+figure;
+plot(t, vc, 'b', 'LineWidth', 1.5); hold on;                   % Curva real
+plot(t_estimada, y_estimada, 'r--', 'LineWidth', 1.5);         % Curva estimada
+plot(t_teo, y_teo, 'g-.', 'LineWidth', 1.5);                   % Curva teórica
+
+title('Comparación: Real vs Estimada vs Teórica');
+xlabel('Tiempo (s)');
+ylabel('Vc (V)');
+legend('Real', 'Estimada', 'Teórica', 'Location', 'best');
+grid on;
+%% Función de transferencia teórica CON el cero (sin despreciar)
+num_teo_cero = [0.0001313 1]; %como nos dio sys_G_ang
+den_teo = [L*C R*C 1];
+sys_teo_cero = tf(num_teo_cero, den_teo);
+
+[y_teo_cero, t_teo_cero] = step(StepInput * sys_teo_cero, t(end));%para graficarla
+
+% Graficar todas las curvas juntas
+figure;
+plot(t, vc, 'b--', 'LineWidth', 1.5); hold on;                    % Curva real
+plot(t_estimada, y_estimada, 'r', 'LineWidth', 1.5);          % Curva estimada
+plot(t_teo, y_teo, 'm-.', 'LineWidth', 1.5);                     % Teórica sin cero
+plot(t_teo_cero, y_teo_cero, 'g:', 'LineWidth', 1.5);           % Teórica con cero
+
+title('Comparación: Real vs Estimada vs Teórica (con y sin cero)');
+xlabel('Tiempo (s)');
+ylabel('Vc (V)');
+legend('Real', 'Estimada', 'Teórica sin cero', 'Teórica con cero', 'Location', 'best');
+grid on;
+
+
 [val lugar] = min(abs(t_inic - t)); 
 y_t1 = vc(lugar);
 t_t1 = t(lugar);

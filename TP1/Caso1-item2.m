@@ -48,17 +48,6 @@ sys_teo = tf(num_teo, den_teo);
 
 [y_teo, t_teo] = step(StepInput * sys_teo, t(end));%para poder graficarla
 
-% Graficar todas las curvas juntas
-figure;
-plot(t, vc, 'b', 'LineWidth', 1.5); hold on;                   % Curva real
-plot(t_estimada, y_estimada, 'r--', 'LineWidth', 1.5);         % Curva estimada
-plot(t_teo, y_teo, 'g-.', 'LineWidth', 1.5);                   % Curva teórica
-
-title('Comparación: Real vs Estimada vs Teórica');
-xlabel('Tiempo (s)');
-ylabel('Vc (V)');
-legend('Real', 'Estimada', 'Teórica', 'Location', 'best');
-grid on;
 %% Función de transferencia teórica CON el cero (sin despreciar)
 num_teo_cero = [0.0001313 1]; %como nos dio sys_G_ang
 den_teo = [L*C R*C 1];
